@@ -4,9 +4,7 @@ import sys
 
 class Tron:
     '''
-    Authors: /u/lurisoft
-             /u/Azgurath
-             /u/mpaw975
+    Based on the work done by: /u/Azgurath & /u/mpaw975
     '''
     def __init__(self):
         self.draw = True
@@ -372,7 +370,7 @@ class Tron:
             'star', 'star', 'star', 'star',
             'star', 'star', 'star', 'star',
             'map', 'map', 'map', 'map',
-            'scry', 'scry', 'scry', 'scry',
+            # 'scry', 'scry', 'scry', 'scry',
             'stir', 'stir', 'stir', 'stir',
             'forest', 'forest', 'forest',
             'forest', 'forest', 'gq', 'gq',
