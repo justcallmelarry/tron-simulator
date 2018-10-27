@@ -370,7 +370,7 @@ class Tron:
             'star', 'star', 'star', 'star',
             'star', 'star', 'star', 'star',
             'map', 'map', 'map', 'map',
-            # 'scry', 'scry', 'scry', 'scry',
+            'scry', 'scry', 'scry', 'scry',
             'stir', 'stir', 'stir', 'stir',
             'forest', 'forest', 'forest',
             'forest', 'forest', 'gq', 'gq',
