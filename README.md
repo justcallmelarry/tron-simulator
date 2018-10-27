@@ -1,7 +1,7 @@
 # tron-simulator
 Based on the work done by: /u/Azgurath & /u/mpaw975
 
-## The emulation
+## The games
 The game creates a deck of the following:
 * 12 tron pieces
 * 8 star effects
