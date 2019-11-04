@@ -426,11 +426,12 @@ class Tron:
             turn_four_tron, tot_t4_tron))
         self.output('Turn three Karn: {:.2f}%'.format(t3_karn))
         self.output('Average turn tron: {:.2f}'.format(avg_turns))
-        self.output('Have Karn when tron is done: {:.2f}%'.format(have_karn))
+        self.output('\nHave Karn when tron is done: {:.2f}%'.format(have_karn))
         self.output('Failed to get tron by tun 10: {:.2f}%'.format(tot_failed))
         self.output('Average starting hand size: {:.2f}'.format(avg_size))
         self.output('Average starting hand size when ' +
                     'failed to get tron: {:.2f}'.format(failed_avg_size))
+        self.output('\nGames played: {}'.format(self.loops))
         self.output('-' * 70)
 
     @staticmethod
@@ -567,7 +568,7 @@ class Tron:
 def main(args):
     T = Tron()
     T.settings(args)
-    with Bar('games played', max=T.loops) as bar:
+    with Bar('Assembling Tron', max=T.loops) as bar:
         for i in range(T.loops):
             T.game()
             bar.next()
