@@ -1,6 +1,8 @@
 import random
 import sys
 
+from progress.bar import Bar
+
 
 class Tron:
     '''
@@ -37,30 +39,27 @@ class Tron:
         bottom = []
 
         # Populate starting hand
-        starting_size = 7
+        mulligans = 0
         decided_on_hand = False
         hand = random.sample(self.deck, 7)
-        have_tron = False
 
         # Mulligan
         # Keep if guarunteed tron
         # Keep if 6 cards or less and 2 or more tron pieces
         # Keep if 4 or less cards and 1 or more tron pieces
-        while not decided_on_hand and starting_size > 0:
+        while not decided_on_hand and mulligans < 7:
             # natural tron
             if all(x in hand for x in ['Mine', 'Tower', 'PP']):
-                have_tron = True
                 decided_on_hand = True
 
             # guarunteed tron
             elif (self.troncheck(hand) >= 2 and (
                     ('map' in hand) or
                     ('scry' in hand and 'star' in hand))):
-                have_tron = True
                 decided_on_hand = True
 
             # 2 pieces
-            if starting_size <= 6 and not decided_on_hand:
+            if mulligans >= 2 and not decided_on_hand:
                 if self.troncheck(hand) >= 2:
                     decided_on_hand = True
                 if any(x in hand for x in ('Tower', 'Mine', 'PP')):
@@ -70,48 +69,133 @@ class Tron:
                         decided_on_hand = True
 
             # 1 piece
-            if starting_size <= 4 and not decided_on_hand:
+            if mulligans >= 3 and not decided_on_hand:
                 if any(x in hand for x in ('Tower', 'Mine', 'PP')):
                     decided_on_hand = True
 
             # Mull to 3
-            if starting_size <= 3 and not decided_on_hand:
+            if mulligans >= 4 and not decided_on_hand:
                 decided_on_hand = True
 
             # Mulligan
             if not decided_on_hand:
-                starting_size -= 1
-                hand = random.sample(self.deck, starting_size)
+                mulligans += 1
+                hand = random.sample(self.deck, 7)
 
         # Take the cards in hand from the deck
         for card in hand:
             self.deck.remove(card)
 
-        # Scry if mulliganed
-        scry = starting_size < 7
-        scry_bottom = True
-        new_card = ''
-        if scry and not have_tron:
-            new_card = random.choice(self.deck)
-            # Have two pieces, keep map or third piece
-            if self.troncheck(hand) >= 2:
-                if new_card in ('map', 'Tower', 'Mine', 'PP') and (
-                        new_card not in hand):
-                    scry_bottom = False
-                if new_card == 'scry' and any(
-                        x in hand for x in ['star', 'forest']):
-                    scry_bottom = False
-                if new_card == any(x in hand for x in ['star', 'forest']) and (
-                        'scry' in hand):
-                    scry_bottom = False
-                if new_card == 'stir' and any(
-                        x in hand for x in ['star', 'forest']):
-                    scry_bottom = False
+        # Put mulligans back
+        target_hand_size = 7 - mulligans
+        saved = []
+        guaranteed_tron = False
 
-            if scry_bottom:
-                self.deck.remove(new_card)
-                bottom.append(new_card)
-                new_card = ''
+        while target_hand_size < 7 and len(saved) < target_hand_size:
+            if self.troncheck(saved) == 3:
+                guaranteed_tron = True
+
+            if not guaranteed_tron:
+                if 'Tower' in hand and 'Tower' not in saved:
+                    saved.append('Tower')
+                    hand.remove('Tower')
+                    continue
+
+                if 'Mine' in hand and 'Mine' not in saved:
+                    saved.append('Mine')
+                    hand.remove('Mine')
+                    continue
+
+                if 'PP' in hand and 'PP' not in saved:
+                    saved.append('PP')
+                    hand.remove('PP')
+                    continue
+
+                if self.troncheck(saved) >= 2:
+                    if 'map' in hand and 'map' not in saved:
+                        saved.append('map')
+                        hand.remove('map')
+                        guaranteed_tron = True
+                        continue
+
+                    if 'scry' in hand and 'star' in hand and len(saved) >= target_hand_size + 2:
+                        saved.append('scry')
+                        hand.remove('scry')
+                        saved.append('star')
+                        hand.remove('star')
+                        guaranteed_tron = True
+                        continue
+
+                    if 'stir' in hand and 'star' in hand and len(saved) >= target_hand_size + 2:
+                        saved.append('stir')
+                        hand.remove('stir')
+                        saved.append('star')
+                        hand.remove('star')
+                        continue
+
+                if 'scry' in hand and 'forest' in hand and len(saved) >= target_hand_size + 2:
+                    saved.append('scry')
+                    hand.remove('scry')
+                    saved.append('forest')
+                    hand.remove('forest')
+                    guaranteed_tron = True
+                    continue
+
+                if 'stir' in hand and 'forest' in hand and len(saved) >= target_hand_size + 2:
+                    saved.append('stir')
+                    hand.remove('stir')
+                    saved.append('forest')
+                    hand.remove('forest')
+                    continue
+
+                if 'map' in hand:
+                    saved.append('map')
+                    hand.remove('map')
+                    continue
+
+                if 'star' in hand:
+                    saved.append('star')
+                    hand.remove('star')
+                    continue
+
+                if 'scry' in hand:
+                    saved.append('scry')
+                    hand.remove('scry')
+                    continue
+
+                if 'stir' in hand:
+                    saved.append('stir')
+                    hand.remove('stir')
+                    continue
+
+                if 'forest' in hand:
+                    saved.append('forest')
+                    hand.remove('forest')
+                    continue
+
+                if 'gq' in hand:
+                    saved.append('gq')
+                    hand.remove('gq')
+                    continue
+
+            else:
+                if 'karn' in hand:
+                    saved.append('karn')
+                    hand.remove('karn')
+                    continue
+
+                if 'star' in hand:
+                    saved.append('star')
+                    hand.remove('star')
+                    continue
+
+            card = hand[0]
+            hand.remove(card)
+            saved.append(card)
+
+        if mulligans > 0:
+            bottom += [x for x in hand]
+            hand = [x for x in saved]
 
         # Main loop for turns!
         turn = 0
@@ -125,16 +209,8 @@ class Tron:
             green = 0
             lands_played = 0
 
-            # draw a card
-            # if it's the first card after scrying
-            if (self.draw and turn == 1) or (not self.draw and turn == 2):
-                if new_card == '':
-                    new_card = random.choice(self.deck)
-                hand.append(new_card)
-                self.deck.remove(new_card)
-
             # otherwise
-            elif self.draw or turn != 1:
+            if self.draw or turn != 1:
                 new_card = random.choice(self.deck)
                 hand.append(new_card)
                 self.deck.remove(new_card)
@@ -327,10 +403,10 @@ class Tron:
 
         if turn < 10:
             self.total_turns += turn
-            self.success_starting_size += starting_size
+            self.success_starting_size += target_hand_size
         else:
             self.failed_to_tron += 1
-            self.failed_starting_size += starting_size
+            self.failed_starting_size += target_hand_size
 
     def report(self):
         avg_turns = self.total_turns / float(self.loops - self.failed_to_tron)
@@ -353,7 +429,7 @@ class Tron:
         self.output('Have Karn when tron is done: {:.2f}%'.format(have_karn))
         self.output('Failed to get tron by tun 10: {:.2f}%'.format(tot_failed))
         self.output('Average starting hand size: {:.2f}'.format(avg_size))
-        self.output('Average starting hand size when' +
+        self.output('Average starting hand size when ' +
                     'failed to get tron: {:.2f}'.format(failed_avg_size))
         self.output('-' * 70)
 
@@ -491,8 +567,10 @@ class Tron:
 def main(args):
     T = Tron()
     T.settings(args)
-    for i in range(T.loops):
-        T.game()
+    with Bar('games played', max=T.loops) as bar:
+        for i in range(T.loops):
+            T.game()
+            bar.next()
     T.report()
 
 
