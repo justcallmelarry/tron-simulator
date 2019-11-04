@@ -17,6 +17,10 @@ The main idea is to try to emulate these types of games are to make better mulli
 There are a few experimental settings to see if you should try scrying/maping for the second piece if you only have a tron piece and nothing else to do with your mana.
 
 ## Usage
+First install the requirements:
+`pip install -r requirements.txt`
+
+Then the simulator is run with the following options:
 ```
 $ python tron.py [otp] [number of emulated games]
 ```
