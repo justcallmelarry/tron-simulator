@@ -12,7 +12,7 @@ The game creates a deck of the following:
 * 2 other lands (colorless for all intents and purposes)
 * 4 karn
 
-The main to try to emulate these types of games are to make better mulliganing decisions and to see how often you can expect to have tron (with or without karn) on t3.
+The main idea is to try to emulate these types of games are to make better mulliganing decisions and to see how often you can expect to have tron (with or without karn) on t3.
 
 There are a few experimental settings to see if you should try scrying/maping for the second piece if you only have a tron piece and nothing else to do with your mana.
 
